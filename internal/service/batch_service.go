@@ -128,6 +128,9 @@ func (s *BatchService) Evaluate(ctx context.Context, id model.ID, evaluatorName 
 }
 
 func (s *BatchService) Finalize(ctx context.Context, id model.ID, reviewer string) error {
+	if err := ctx.Err(); err != nil {
+		return fmt.Errorf("finalize batch cancelled: %w", err)
+	}
 	batch, err := s.Get(ctx, id)
 	if err != nil {
 		return fmt.Errorf("finalize batch: %w", err)

@@ -37,7 +37,7 @@ func (s *AlertService) Get(ctx context.Context, id model.ID) (model.Alert, error
 func (s *AlertService) load(ctx context.Context, id model.ID) (*model.Alert, error) {
 	alert, err := s.repo.GetAlert(ctx, id)
 	if err != nil {
-		return nil, err
+		return nil, notFound(err, "alert", string(id))
 	}
 	return &alert, nil
 }
@@ -47,6 +47,9 @@ func (s *AlertService) ListOpen(ctx context.Context, buoyID model.ID, severity m
 }
 
 func (s *AlertService) Acknowledge(ctx context.Context, id model.ID, owner string) error {
+	if err := ctx.Err(); err != nil {
+		return fmt.Errorf("acknowledge alert cancelled: %w", err)
+	}
 	alert, err := s.load(ctx, id)
 	if err != nil {
 		return fmt.Errorf("acknowledge alert: %w", err)
