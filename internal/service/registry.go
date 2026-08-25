@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"fmt"
 	"sync"
@@ -49,7 +50,7 @@ func NewApplication(s *sqlite.Store) *Application {
 func (a *Application) Close() error { return a.Store.Close() }
 
 func notFound(err error, entity, id string) error {
-	if errors.Is(err, store.ErrNotFound) {
+	if errors.Is(err, store.ErrNotFound) || errors.Is(err, sql.ErrNoRows) {
 		return store.NotFound(entity, id)
 	}
 	return err

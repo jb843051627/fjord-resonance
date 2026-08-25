@@ -33,7 +33,7 @@ func (s *Store) GetAlert(ctx context.Context, id model.ID) (model.Alert, error) 
 	err := s.db.QueryRowContext(ctx, `SELECT id,buoy_id,batch_id,severity,state,code,message,opened_at,acknowledged_at,closed_at,owner FROM alerts WHERE id=?`, id).
 		Scan(&a.ID, &a.BuoyID, &a.BatchID, &a.Severity, &a.State, &a.Code, &a.Message, &opened, &ack, &closed, &a.Owner)
 	if err == sql.ErrNoRows {
-		return model.Alert{}, store.NotFound("alert", string(id))
+		return model.Alert{}, sql.ErrNoRows
 	}
 	if err != nil {
 		return model.Alert{}, fmt.Errorf("get alert: %w", err)
