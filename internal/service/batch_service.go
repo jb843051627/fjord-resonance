@@ -139,11 +139,10 @@ func (s *BatchService) Finalize(ctx context.Context, id model.ID, reviewer strin
 	if err != nil {
 		return fmt.Errorf("finalize quality: %w", err)
 	}
-	target := model.BatchReview
 	if result.Decision == model.DecisionReject {
-		target = model.BatchRejected
+		return fmt.Errorf("quality rejection requires review: %w", store.ErrValidation)
 	}
-	updated, err := engine.Transition(batch, target)
+	updated, err := engine.Transition(batch, model.BatchReview)
 	if err != nil {
 		return fmt.Errorf("finalize state: %w", err)
 	}
@@ -152,9 +151,6 @@ func (s *BatchService) Finalize(ctx context.Context, id model.ID, reviewer strin
 		_, err := tx.ExecContext(txctx, `UPDATE batches SET status=?,completed_at=?,reviewer=?,summary=?,updated_at=? WHERE id=?`, updated.Status, updated.CompletedAt.UTC().Format(time.RFC3339Nano), updated.Reviewer, updated.Summary, time.Now().UTC().Format(time.RFC3339Nano), updated.ID)
 		if err != nil {
 			return fmt.Errorf("finalize update: %w", err)
-		}
-		if result.Decision == model.DecisionReject {
-			return fmt.Errorf("quality rejection requires review: %w", store.ErrValidation)
 		}
 		return nil
 	})

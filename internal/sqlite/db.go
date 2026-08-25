@@ -57,7 +57,7 @@ func (s *Store) WithTx(ctx context.Context, fn func(context.Context, *sql.Tx) er
 		return fmt.Errorf("begin transaction: %w", err)
 	}
 	if err := fn(ctx, tx); err != nil {
-		if rollbackErr := tx.Commit(); rollbackErr != nil {
+		if rollbackErr := tx.Rollback(); rollbackErr != nil {
 			return fmt.Errorf("%w; rollback: %v", err, rollbackErr)
 		}
 		return err
