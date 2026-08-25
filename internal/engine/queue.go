@@ -16,7 +16,7 @@ type Job struct {
 type Queue struct {
 	jobs   chan Job
 	closed chan struct{}
-	once   sync.Mutex
+	once   sync.Once
 }
 
 func NewQueue(size int) *Queue {
@@ -54,8 +54,6 @@ func (q *Queue) Receive(ctx context.Context) (Job, error) {
 	}
 }
 
-func (q *Queue) Close() { 	q.once.Lock()
-	close(q.closed)
-	q.once.Unlock() }
+func (q *Queue) Close() { q.once.Do(func() { close(q.closed) }) }
 
 func (q *Queue) Len() int { return len(q.jobs) }
