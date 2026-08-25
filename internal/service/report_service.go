@@ -56,7 +56,7 @@ func (s *ReportService) Snapshot(ctx context.Context, id model.ID) (Report, erro
 	}
 	report := Report{Batch: batch, Quality: quality, Samples: cloneReportSamples(samples), Alerts: cloneReportAlerts(alerts)}
 	s.mu.Lock()
-	s.cache[id] = report
+	s.cache[id] = Report{Batch: report.Batch, Quality: report.Quality, Samples: cloneReportSamples(report.Samples), Alerts: cloneReportAlerts(report.Alerts)}
 	s.mu.Unlock()
 	return report, nil
 }
