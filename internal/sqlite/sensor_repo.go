@@ -30,16 +30,16 @@ func (s *Store) GetSensor(ctx context.Context, id model.ID) (model.Sensor, error
 		return model.Sensor{}, err
 	}
 	var sensor model.Sensor
-	var lastReading, created string
+	var readingText, created string
 	err := s.db.QueryRowContext(ctx, `SELECT id,buoy_id,serial,kind,status,sample_rate,calibration,last_reading,created_at FROM sensors WHERE id=?`, id).
-		Scan(&sensor.ID, &sensor.BuoyID, &sensor.Serial, &sensor.Kind, &sensor.Status, &sensor.SampleRate, &sensor.Calibration, &lastReading, &created)
+		Scan(&sensor.ID, &sensor.BuoyID, &sensor.Serial, &sensor.Kind, &sensor.Status, &sensor.SampleRate, &sensor.Calibration, &readingText, &created)
 	if err == sql.ErrNoRows {
 		return model.Sensor{}, store.NotFound("sensor", string(id))
 	}
 	if err != nil {
 		return model.Sensor{}, fmt.Errorf("get sensor: %w", err)
 	}
-	sensor.LastReading, sensor.CreatedAt = fromText(lastReading), fromText(created)
+	sensor.LastReading, sensor.CreatedAt = fromText(readingText), fromText(created)
 	return sensor, nil
 }
 
@@ -55,11 +55,11 @@ func (s *Store) ListSensors(ctx context.Context, buoyID model.ID) ([]model.Senso
 	result := make([]model.Sensor, 0)
 	for rows.Next() {
 		var sensor model.Sensor
-		var lastReading, created string
-		if err := rows.Scan(&sensor.ID, &sensor.BuoyID, &sensor.Serial, &sensor.Kind, &sensor.Status, &sensor.SampleRate, &sensor.Calibration, &lastReading, &created); err != nil {
+		var readingText, created string
+		if err := rows.Scan(&sensor.ID, &sensor.BuoyID, &sensor.Serial, &sensor.Kind, &sensor.Status, &sensor.SampleRate, &sensor.Calibration, &readingText, &created); err != nil {
 			return nil, err
 		}
-		sensor.LastReading, sensor.CreatedAt = fromText(lastReading), fromText(created)
+		sensor.LastReading, sensor.CreatedAt = fromText(readingText), fromText(created)
 		result = append(result, sensor)
 	}
 	if err := rows.Err(); err != nil {

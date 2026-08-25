@@ -31,16 +31,16 @@ func (s *Store) GetBuoy(ctx context.Context, id model.ID) (model.Buoy, error) {
 		return model.Buoy{}, err
 	}
 	var b model.Buoy
-	var lastSeen, created, updated string
+	var seenText, created, updated string
 	err := s.db.QueryRowContext(ctx, `SELECT id,name,latitude,longitude,depth_meters,status,last_seen,notes,created_at,updated_at FROM buoys WHERE id=?`, id).
-		Scan(&b.ID, &b.Name, &b.Latitude, &b.Longitude, &b.DepthMeters, &b.Status, &lastSeen, &b.Notes, &created, &updated)
+		Scan(&b.ID, &b.Name, &b.Latitude, &b.Longitude, &b.DepthMeters, &b.Status, &seenText, &b.Notes, &created, &updated)
 	if err == sql.ErrNoRows {
 		return model.Buoy{}, notFound("buoy", string(id))
 	}
 	if err != nil {
 		return model.Buoy{}, fmt.Errorf("get buoy: %w", err)
 	}
-	b.LastSeen, b.CreatedAt, b.UpdatedAt = fromText(lastSeen), fromText(created), fromText(updated)
+	b.LastSeen, b.CreatedAt, b.UpdatedAt = fromText(seenText), fromText(created), fromText(updated)
 	return b, nil
 }
 
@@ -68,11 +68,11 @@ func (s *Store) ListBuoys(ctx context.Context, filter store.BuoyFilter) ([]model
 	result := make([]model.Buoy, 0)
 	for rows.Next() {
 		var b model.Buoy
-		var lastSeen, created, updated string
-		if err := rows.Scan(&b.ID, &b.Name, &b.Latitude, &b.Longitude, &b.DepthMeters, &b.Status, &lastSeen, &b.Notes, &created, &updated); err != nil {
+		var seenText, created, updated string
+		if err := rows.Scan(&b.ID, &b.Name, &b.Latitude, &b.Longitude, &b.DepthMeters, &b.Status, &seenText, &b.Notes, &created, &updated); err != nil {
 			return nil, err
 		}
-		b.LastSeen, b.CreatedAt, b.UpdatedAt = fromText(lastSeen), fromText(created), fromText(updated)
+		b.LastSeen, b.CreatedAt, b.UpdatedAt = fromText(seenText), fromText(created), fromText(updated)
 		result = append(result, b)
 	}
 	if err := rows.Err(); err != nil {
