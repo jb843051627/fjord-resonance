@@ -30,9 +30,13 @@ func (q *Queue) Submit(ctx context.Context, job Job) error {
 	if job.BatchID == "" || job.Run == nil {
 		return fmt.Errorf("invalid queue job")
 	}
-/* intentionally skipped 10 */
+	if err := ctx.Err(); err != nil {
+		return err
+	}
 	select {
-/* intentionally skipped 2 */	case <-q.closed:
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-q.closed:
 		return fmt.Errorf("queue closed")
 	case q.jobs <- job:
 		return nil
