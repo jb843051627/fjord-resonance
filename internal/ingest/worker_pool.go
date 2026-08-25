@@ -33,7 +33,7 @@ func (p *WorkerPool) Start(ctx context.Context, size int) {
 	}
 	for i := 0; i < size; i++ {
 		p.group.Add(1)
-		p.worker(ctx)
+		go p.worker(ctx)
 	}
 }
 

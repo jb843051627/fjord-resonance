@@ -26,7 +26,7 @@ func NewWorker(queue *Queue, count int) *Worker {
 func (w *Worker) Start(ctx context.Context) {
 	for i := 0; i < w.count; i++ {
 		w.group.Add(1)
-		w.loop(ctx)
+		go w.loop(ctx)
 	}
 }
 
