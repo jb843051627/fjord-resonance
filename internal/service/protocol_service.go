@@ -63,6 +63,9 @@ func (s *ProtocolService) Retire(ctx context.Context, id model.ID) error {
 }
 
 func (s *ProtocolService) ValidateSample(protocol model.Protocol, sample model.AcousticSample) error {
+	if protocol.State != model.ProtocolReady {
+		return fmt.Errorf("protocol is not ready: %w", store.ErrInvalidState)
+	}
 	if sample.FrequencyHz < protocol.MinFrequencyHz || sample.FrequencyHz > protocol.MaxFrequencyHz {
 		return store.ErrValidation
 	}

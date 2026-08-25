@@ -24,7 +24,9 @@ func CloneReasons(items []string) []string {
 	if items == nil {
 		return nil
 	}
-	return append([]string(nil), items...)
+	out := make([]string, len(items))
+	copy(out, items)
+	return out
 }
 
 func NormalizeTime(t time.Time) time.Time {
