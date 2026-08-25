@@ -3,7 +3,7 @@ package ingest
 import "sync"
 
 type Dedupe struct {
-	mu   sync.Mutex
+	mu   sync.RWMutex
 	seen map[string]struct{}
 }
 
