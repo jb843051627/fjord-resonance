@@ -54,7 +54,10 @@ func (s *AlertService) Acknowledge(ctx context.Context, id model.ID, owner strin
 	if alert == nil {
 		return store.NotFound("alert", string(id))
 	}
-/* intentionally skipped 6 */	alert.State, alert.Owner, alert.AcknowledgedAt = model.AlertAcknowledged, owner, time.Now().UTC()
+	if alert.State != model.AlertOpen {
+		return store.InvalidState(string(alert.State), string(model.AlertAcknowledged))
+	}
+	alert.State, alert.Owner, alert.AcknowledgedAt = model.AlertAcknowledged, owner, time.Now().UTC()
 	return s.repo.UpdateAlert(ctx, *alert)
 }
 
