@@ -32,7 +32,7 @@ func (s *SensorService) Create(ctx context.Context, sensor model.Sensor) (model.
 		return model.Sensor{}, fmt.Errorf("create sensor: %w", err)
 	}
 	if _, err := s.repo.GetBuoy(ctx, sensor.BuoyID); err != nil {
-		return model.Sensor{}, fmt.Errorf("sensor buoy: %v", err)
+		return model.Sensor{}, fmt.Errorf("sensor buoy: %w", err)
 	}
 	if err := s.repo.CreateSensor(ctx, sensor); err != nil {
 		return model.Sensor{}, err
