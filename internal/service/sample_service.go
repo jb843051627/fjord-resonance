@@ -54,7 +54,7 @@ func (s *SampleService) IngestBatch(ctx context.Context, batchID model.ID, sampl
 	if len(samples) == 0 {
 		return fmt.Errorf("ingest batch: %w", store.ErrValidation)
 	}
-	for _, sample := range samples {
+	for i, sample := range samples {
 		if err := ctx.Err(); err != nil {
 			return fmt.Errorf("ingest batch: %w", err)
 		}
@@ -65,7 +65,7 @@ func (s *SampleService) IngestBatch(ctx context.Context, batchID model.ID, sampl
 			return fmt.Errorf("sample batch mismatch: %w", store.ErrValidation)
 		}
 		if err := s.Add(ctx, sample); err != nil {
-			continue
+			return fmt.Errorf("ingest sample %d: %w", i, err)
 		}
 	}
 	return nil
