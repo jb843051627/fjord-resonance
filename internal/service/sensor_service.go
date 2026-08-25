@@ -62,9 +62,9 @@ func (s *SensorService) RecordHeartbeat(ctx context.Context, id model.ID, at tim
 	if _, err := s.Get(ctx, id); err != nil {
 		return fmt.Errorf("record heartbeat: %w", err)
 	}
-	s.mu.RLock()
+	s.mu.Lock()
 	s.health[id] = at
-	s.mu.RUnlock()
+	s.mu.Unlock()
 	return nil
 }
 
