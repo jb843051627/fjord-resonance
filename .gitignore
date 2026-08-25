@@ -1,0 +1,12 @@
+*.db
+*.db-shm
+*.db-wal
+*.test
+*.out
+fjord-resonance
+.env
+cases/
+_docker/
+metadata/
+*.py
+__pycache__/
