@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>Fjord Resonance</title></head>
+<body>
+<main><h1>Fjord Resonance</h1><p>远海声学浮标校准批次服务</p><button id="health">检查服务</button><pre id="output"></pre></main>
+<script>
+document.querySelector('#health').addEventListener('click', async () => {
+  const response = await fetch('/healthz');
+  document.querySelector('#output').textContent = await response.text();
+});
+</script>
+</body>
+</html>
