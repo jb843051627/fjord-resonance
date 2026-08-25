@@ -31,6 +31,7 @@ func (s *ExportService) Create(ctx context.Context, batchID model.ID, format mod
 }
 
 func (s *ExportService) CSV(ctx context.Context, batchID model.ID) ([]byte, error) {
+	ctx = export.ContextForExport(ctx)
 	items, err := s.repo.ListSamples(ctx, batchID, store.SampleFilter{Limit: 10000})
 	if err != nil {
 		return nil, fmt.Errorf("export samples: %w", err)

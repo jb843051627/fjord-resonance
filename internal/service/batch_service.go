@@ -77,6 +77,9 @@ func (s *BatchService) Queue(ctx context.Context, id model.ID) error {
 }
 
 func (s *BatchService) Start(ctx context.Context, id model.ID, at time.Time) error {
+	if err := ctx.Err(); err != nil {
+		return fmt.Errorf("start batch cancelled: %w", err)
+	}
 	batch, err := s.Get(ctx, id)
 	if err != nil {
 		return fmt.Errorf("start batch: %w", err)

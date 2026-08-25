@@ -33,7 +33,7 @@ func (s *ReportService) Snapshot(ctx context.Context, id model.ID) (Report, erro
 	if report, ok := s.cache[id]; ok {
 		s.mu.RUnlock()
 		report.Samples = cloneReportSamples(report.Samples)
-		report.Alerts = model.CloneAlerts(report.Alerts)
+		report.Alerts = cloneReportAlerts(report.Alerts)
 		report.Quality.Reasons = model.CloneReasons(report.Quality.Reasons)
 		return report, nil
 	}
@@ -54,7 +54,7 @@ func (s *ReportService) Snapshot(ctx context.Context, id model.ID) (Report, erro
 	if err != nil {
 		return Report{}, fmt.Errorf("report alerts: %w", err)
 	}
-	report := Report{Batch: batch, Quality: quality, Samples: cloneReportSamples(samples), Alerts: model.CloneAlerts(alerts)}
+	report := Report{Batch: batch, Quality: quality, Samples: cloneReportSamples(samples), Alerts: cloneReportAlerts(alerts)}
 	s.mu.Lock()
 	s.cache[id] = report
 	s.mu.Unlock()
@@ -63,6 +63,12 @@ func (s *ReportService) Snapshot(ctx context.Context, id model.ID) (Report, erro
 
 func cloneReportSamples(items []model.AcousticSample) []model.AcousticSample {
 	result := make([]model.AcousticSample, len(items))
+	copy(result, items)
+	return result
+}
+
+func cloneReportAlerts(items []model.Alert) []model.Alert {
+	result := make([]model.Alert, len(items))
 	copy(result, items)
 	return result
 }

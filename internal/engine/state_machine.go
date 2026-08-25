@@ -2,10 +2,13 @@ package engine
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/jb843051627/fjord-resonance/internal/model"
 	"github.com/jb843051627/fjord-resonance/internal/store"
 )
+
+var transitionMu sync.RWMutex
 
 var transitions = map[model.BatchStatus]map[model.BatchStatus]bool{
 	model.BatchDraft:     {model.BatchQueued: true, model.BatchCancelled: true},
@@ -16,6 +19,8 @@ var transitions = map[model.BatchStatus]map[model.BatchStatus]bool{
 }
 
 func CanTransition(from, to model.BatchStatus) bool {
+	transitionMu.RLock()
+	defer transitionMu.RUnlock()
 	return transitions[from][to]
 }
 

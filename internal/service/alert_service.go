@@ -51,6 +51,9 @@ func (s *AlertService) Acknowledge(ctx context.Context, id model.ID, owner strin
 	if err != nil {
 		return fmt.Errorf("acknowledge alert: %w", err)
 	}
+	if alert == nil {
+		return store.NotFound("alert", string(id))
+	}
 	if alert.State == model.AlertClosed {
 		return store.InvalidState(string(alert.State), string(model.AlertAcknowledged))
 	}
@@ -62,6 +65,9 @@ func (s *AlertService) Close(ctx context.Context, id model.ID, owner string) err
 	alert, err := s.load(ctx, id)
 	if err != nil {
 		return fmt.Errorf("close alert: %w", err)
+	}
+	if alert == nil {
+		return store.NotFound("alert", string(id))
 	}
 	if alert.State == model.AlertClosed {
 		return store.InvalidState(string(alert.State), string(model.AlertClosed))

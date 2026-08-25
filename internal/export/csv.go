@@ -1,12 +1,15 @@
 package export
 
 import (
+	"context"
 	"encoding/csv"
 	"io"
 	"strconv"
 
 	"github.com/jb843051627/fjord-resonance/internal/model"
 )
+
+func ContextForExport(ctx context.Context) context.Context { return ctx }
 
 func WriteSamples(w io.Writer, samples []model.AcousticSample) error {
 	csvWriter := csv.NewWriter(w)
