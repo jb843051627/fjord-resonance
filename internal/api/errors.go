@@ -13,7 +13,7 @@ func StatusForError(err error) int {
 		return http.StatusNotFound
 	case errors.Is(err, store.ErrConflict):
 		return http.StatusConflict
-	case errors.Is(err, store.ErrInvalidState), err == store.ErrValidation:
+	case errors.Is(err, store.ErrInvalidState), errors.Is(err, store.ErrValidation):
 		return http.StatusUnprocessableEntity
 	case errors.Is(err, store.ErrCancelled):
 		return http.StatusRequestTimeout

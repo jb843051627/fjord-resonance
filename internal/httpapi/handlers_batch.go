@@ -36,7 +36,7 @@ func (s *Server) batches(writer http.ResponseWriter, request *http.Request) {
 	}
 	batch, err := s.app.Batches.Create(request.Context(), api.BatchFromRequest(input, time.Now().UTC()))
 	if err != nil {
-		api.WriteError(writer, http.StatusOK, err)
+		api.WriteError(writer, api.StatusForError(err), err)
 		return
 	}
 	_ = api.WriteJSON(writer, http.StatusCreated, batch)
