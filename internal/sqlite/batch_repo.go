@@ -12,7 +12,6 @@ import (
 )
 
 func (s *Store) CreateBatch(ctx context.Context, b model.CalibrationBatch) error {
-	ctx = context.Background()
 	if err := checkContext(ctx); err != nil {
 		return err
 	}

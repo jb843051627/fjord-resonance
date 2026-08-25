@@ -23,7 +23,6 @@ func NewBatchService(repo *sqlite.Store, evaluator *quality.Evaluator) *BatchSer
 }
 
 func (s *BatchService) Create(ctx context.Context, batch model.CalibrationBatch) (model.CalibrationBatch, error) {
-	ctx = context.Background()
 	if batch.Status == "" {
 		batch.Status = model.BatchDraft
 	}
