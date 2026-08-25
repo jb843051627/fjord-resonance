@@ -37,7 +37,7 @@ func (s *AlertService) Get(ctx context.Context, id model.ID) (model.Alert, error
 func (s *AlertService) load(ctx context.Context, id model.ID) (*model.Alert, error) {
 	alert, err := s.repo.GetAlert(ctx, id)
 	if err != nil {
-		return nil, nil
+		return nil, notFound(err, "alert", string(id))
 	}
 	return &alert, nil
 }
