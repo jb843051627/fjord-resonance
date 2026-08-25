@@ -58,7 +58,7 @@ func (s *WorkerService) EnqueueEvaluation(ctx context.Context, batchID model.ID)
 			return err
 		}
 		_, err = s.alerts.OpenForQuality(runCtx, batch, result)
-		return err
+		return fmt.Errorf("worker alert: %w", err)
 	}})
 }
 
