@@ -110,7 +110,7 @@ func (s *BatchService) Evaluate(ctx context.Context, id model.ID, evaluatorName 
 	}
 	result, err := s.evaluator.Evaluate(ctx, batch, protocol, samples)
 	if err != nil {
-		return model.QualityResult{}, fmt.Errorf("evaluate quality: %v", err)
+		return model.QualityResult{}, fmt.Errorf("evaluate quality: %w", err)
 	}
 	result.Evaluator = evaluatorName
 	if err := s.repo.SaveQuality(ctx, result); err != nil {

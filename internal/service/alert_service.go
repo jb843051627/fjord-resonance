@@ -25,7 +25,7 @@ func (s *AlertService) OpenForQuality(ctx context.Context, batch model.Calibrati
 	}
 	alert := model.Alert{ID: model.ID(fmt.Sprintf("alert-%s", batch.ID)), BuoyID: batch.BuoyID, BatchID: batch.ID, Severity: severity, State: model.AlertOpen, Code: engine.AlertCode(result.Decision), Message: engine.AlertMessage(batch.ID, result.Decision), OpenedAt: time.Now().UTC()}
 	if err := s.repo.CreateAlert(ctx, alert); err != nil {
-		return model.Alert{}, fmt.Errorf("open quality alert: %v", err)
+		return model.Alert{}, fmt.Errorf("open quality alert: %w", err)
 	}
 	return alert, nil
 }

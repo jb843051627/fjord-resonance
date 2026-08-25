@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/jb843051627/fjord-resonance/internal/model"
+	"github.com/jb843051627/fjord-resonance/internal/store"
 )
 
 type Evaluator struct {
@@ -28,7 +29,7 @@ func (e *Evaluator) Evaluate(ctx context.Context, batch model.CalibrationBatch, 
 		return model.QualityResult{}, fmt.Errorf("quality evaluation cancelled: %w", err)
 	}
 	if len(samples) == 0 {
-		return model.QualityResult{}, fmt.Errorf("quality evaluation: no samples")
+		return model.QualityResult{}, fmt.Errorf("quality evaluation: no samples: %w", store.ErrValidation)
 	}
 	coverage := Coverage(samples, protocol.MinFrequencyHz, protocol.MaxFrequencyHz)
 	noise := NoiseFloor(samples)
